@@ -3,3 +3,12 @@
 !**/*.go
 !**/*.mod
 !**/*.sum
+*/.git
+*/.tox
+*/.svn
+*/.vscode
+*/.cache
+*/.egss
+*/__pycache__*
+*/secucheck-*
+*-linux-amd64_*

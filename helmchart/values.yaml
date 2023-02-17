@@ -1,0 +1,7 @@
+image:
+  repository: dom-hagndaas-registry.artifactory.si.francetelecom.fr/hagndaas/k8s/service-redis/redis-operator
+  tag: v0.14.0-patch1
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi

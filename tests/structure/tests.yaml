@@ -1,0 +1,48 @@
+---
+schemaVersion: '2.0.0'
+
+fileContentTests:
+  - name: 'Ubuntu /etc/issue.net'
+    path: '/etc/issue.net'
+    expectedContents: ['Ubuntu 20.04.* LTS']
+  - name: 'Hebex Ubuntu image build date'
+    path: '/etc/hebex_image_build'
+    expectedContents: ['Built on .*']
+  - name: 'Timezone Europe/Paris'
+    path: '/etc/timezone'
+    expectedContents: ['Europe/Paris']
+
+fileExistenceTests:
+  - name: '/usr/local/bin/manager'
+    path: '/usr/local/bin/manager'
+    shouldExist: true
+    permissions: '-rwxr-xr-x'
+
+metadataTest:
+  env:
+    - key: LANG
+      value: C.UTF-8
+    - key: PATH
+      value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  cmd: ['/bin/bash']
+  workdir: ''
+  entrypoint: []
+  user: '2'
+
+commandTests:
+  - name: 'manager'
+    command: 'manager'
+    args: ['--help', '2>&1']
+    expectedError:
+      [
+        '-health-probe-bind-address string',
+        '-kubeconfig string',
+        '-leader-elect',
+        '-metrics-bind-address string',
+        '-zap-devel',
+        '-zap-encoder value',
+        '-zap-log-level value',
+        '-zap-stacktrace-level value',
+        '-zap-time-encoding value',
+      ]
+    exitCode: 0

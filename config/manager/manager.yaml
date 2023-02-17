@@ -27,7 +27,7 @@ spec:
         runAsNonRoot: true
       containers:
       - command:
-        - /manager
+        - manager
         args:
         - --leader-elect
         - -zap-log-level=info
