@@ -2,3 +2,4 @@ watchNamespaces:
   - hagndaas-deployment
   - hagndaas-redis
 watch_namespace: hagndaas-redis
+redisComponent: redis-cluster

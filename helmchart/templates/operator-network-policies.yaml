@@ -1,0 +1,52 @@
+{{- $relname := .Release.Name -}}
+{{- $relnamespace := .Release.Namespace -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-cluster-policy-operator-to-nodes
+  namespace: {{ $relnamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ $relname }}
+  egress:
+    {{- range .Values.watchNamespaces }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: {{ $.Values.redisComponent }}
+        - namespaceSelector:
+            matchLabels:
+              las.vegas.rickaastley.com/namespace: {{ . }}
+      ports:
+        - protocol: TCP
+          port: 6379
+    {{- end }}
+  policyTypes:
+    - Egress
+---
+{{- range .Values.watchNamespaces }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-cluster-policy-nodes-from-operator
+  namespace: {{ . }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: {{ $.Values.redisComponent }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: {{ $relname }}
+        - namespaceSelector:
+            matchLabels:
+              las.vegas.rickaastley.com/namespace: {{ $relnamespace }}
+      ports:
+        - protocol: TCP
+          port: 6379
+  policyTypes:
+    - Ingress
+{{- end }}
