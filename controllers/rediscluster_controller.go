@@ -32,14 +32,14 @@ import (
 	redisv1beta1 "github.com/OT-CONTAINER-KIT/redis-operator/api/v1beta1"
 )
 
-// RedisClusterReconciler reconciles a RedisCluster object
+// RedisClusterReconciler reconciles a RedisCluster object.
 type RedisClusterReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
-// Reconcile is part of the main kubernetes reconciliation loop
+// Reconcile is part of the main kubernetes reconciliation loop.
 func (r *RedisClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	reqLogger := r.Log.WithValues("Request.Namespace", req.Namespace, "Request.Name", req.Name)
 	reqLogger.Info("Reconciling opstree redis Cluster controller")
@@ -62,11 +62,11 @@ func (r *RedisClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	followerReplicas := instance.Spec.GetReplicaCounts("follower")
 	totalReplicas := leaderReplicas + followerReplicas
 
-	if err := k8sutils.HandleRedisClusterFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.HandleRedisClusterFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{RequeueAfter: time.Second * 60}, err
 	}
 
-	if err := k8sutils.AddRedisClusterFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.AddRedisClusterFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{RequeueAfter: time.Second * 60}, err
 	}
 

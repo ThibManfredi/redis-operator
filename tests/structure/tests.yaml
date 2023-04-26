@@ -24,10 +24,10 @@ metadataTest:
       value: C.UTF-8
     - key: PATH
       value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  cmd: ['/bin/bash']
-  workdir: ''
-  entrypoint: []
-  user: '2'
+  cmd: []
+  workdir: '/home/hagndaas'
+  entrypoint: ['manager']
+  user: 'hagndaas'
 
 commandTests:
   - name: 'manager'

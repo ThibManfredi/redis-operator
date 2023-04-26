@@ -5,7 +5,7 @@
 ARG GO_VERSION
 
 # Build the manager binary
-FROM cellule-gl-go-docker.artifactory.si.francetelecom.fr/go-build:${GO_VERSION} as go_builder
+FROM cellule-gl-go-docker.artifactory.si.francetelecom.fr/go-build:${GO_VERSION} as builder
 
 ########################################
 #### Arguments (inside build stage) ####
@@ -24,31 +24,21 @@ RUN printf \
     "${GITLAB_CI_PASS}" \
     >~/.netrc
 
-
-# WORKDIR /build
-# # Copy the Go Modules manifests
-# COPY go.mod go.mod
-# COPY go.sum go.sum
-# # cache deps before building and copying source so that we don't need to re-download as much
-# # and so that source changes don't invalidate our downloaded layer
-# RUN go mod download -x 2>&1
-
-
 WORKDIR /build
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+# cache deps before building and copying source so that we don't need to re-download as much
+# and so that source changes don't invalidate our downloaded layer
+RUN go mod download -x 2>&1
+
+# Copy the go source
 COPY . .
 
-ARG GIT_COMMIT
-ARG GIT_BRANCH
-ARG BUILD_TIME
-ARG GO_LDFLAGS
-
-RUN mkdir -p build/_output/bin &&\
-    go mod vendor 2>&1 &&\
-    GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=$CGO_ENABLED GO_LDFLAGS=${GO_LDFLAGS} \
-    go build -mod=vendor -ldflags "-w -s -X main.GitCommit=$GIT_COMMIT -X main.GitBranch=$GIT_BRANCH -X main.BuildTime=$BUILD_TIME" \
-    -o build/_output/bin/manager \
-    main.go &&\
-    cp -r build/_output/bin/manager /usr/local/bin/manager
+# Build
+RUN \
+    CGO_ENABLED=${CGO_ENABLED} GOOS=${GOOS} GOARCH=${GOARCH} GO111MODULE=${GO111MODULE} \
+    go build -o manager
 
 ##################
 #### From ... ####
@@ -56,6 +46,17 @@ RUN mkdir -p build/_output/bin &&\
 # Gets the latest Ubuntu build tag from Artifcatory registry:
 #   https://artifactory.packages.install-os.multis.p.fti.net/webapp/#/artifacts/browse/tree/General/all-officialdfy-docker/ubuntu
 FROM all-officialdfy-docker.artifactory.si.francetelecom.fr/ubuntu:20.04
+
+#####################
+#### Environment ####
+#####################
+ENV DEBIAN_FRONTEND="noninteractive" \
+    INITRD="No" \
+    TZ="Europe/Paris" \
+    # Sytem user
+    SERVICE_USER="hagndaas" \
+    SERVICE_GROUP="hagndaas" \
+    SERVICE_UID=1001
 
 ##################
 #### Metadata ####
@@ -70,7 +71,29 @@ LABEL org.opencontainers.image.vendor="HagnDAAS"
 LABEL org.opencontainers.image.version="${GIT_COMMIT}"
 LABEL org.opencontainers.image.ref.name="${GIT_BRANCH}"
 
-COPY LICENSE /licenses/
-COPY --from=go_builder /usr/local/bin/manager /usr/local/bin/manager
+########################
+#### Copying rootfs ####
+########################
+COPY ./rootfs /tmp/rootfs
+COPY --from=builder /build/manager /usr/local/bin/
 
-USER 2
+##################
+#### Packages ####
+##################
+RUN \
+    # RootFS
+    cp -rv /tmp/rootfs/* / &&\
+    chmod +x /usr/local/bin/* &&\
+    # Debian packages
+    aptinstaller &&\
+    # System user
+    useradd -l -m -U -s "/bin/sh" -u "${SERVICE_UID}" "${SERVICE_USER}" -c "HagnDAAS User" &&\
+    # Clean
+    docker_clean 'END'
+
+###################
+#### Execution ####
+###################
+WORKDIR /home/"${SERVICE_USER}"
+USER "${SERVICE_USER}"
+ENTRYPOINT ["manager"]

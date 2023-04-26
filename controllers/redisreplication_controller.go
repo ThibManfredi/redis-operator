@@ -24,7 +24,6 @@ type RedisReplicationReconciler struct {
 }
 
 func (r *RedisReplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-
 	reqLogger := r.Log.WithValues("Request.Namespace", req.Namespace, "Request.Name", req.Name)
 	reqLogger.Info("Reconciling opstree redis replication controller")
 	instance := &redisv1beta1.RedisReplication{}
@@ -46,11 +45,11 @@ func (r *RedisReplicationReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	followerReplicas := instance.Spec.GetReplicationCounts("replication") - leaderReplicas
 	totalReplicas := leaderReplicas + followerReplicas
 
-	if err := k8sutils.HandleRedisReplicationFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.HandleRedisReplicationFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if err := k8sutils.AddRedisReplicationFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.AddRedisReplicationFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -91,7 +90,6 @@ func (r *RedisReplicationReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	reqLogger.Info("Will reconcile redis operator in again 10 seconds")
 	return ctrl.Result{RequeueAfter: time.Second * 10}, nil
-
 }
 
 // SetupWithManager sets up the controller with the Manager.

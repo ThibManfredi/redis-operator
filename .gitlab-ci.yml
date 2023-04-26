@@ -1,25 +1,13 @@
+variables:
+  HELM_CHART_VERSION: '0.3.0'
+  GOLANGCI_LINT_DISABLED_LINTERS: 'gocognit,gocritic,godot,gofumpt,gosec,lll,revive,unconvert,govet,nlreturn,paralleltest,wsl,tagliatelle,varnamelen,wrapcheck,gomnd,whitespace,nestif,funlen,misspell,gocyclo,ifshort,testpackage'
+  ENABLE_TEST_QUALITY_YAML: 'no'
+  ENABLE_TEST_QUALITY_BATS_COVERAGE: 'no'
+  ENABLE_TEST_QUALITY_SHELL_ORPHAN: 'no'
+  ENABLE_TEST_QUALITY_SHELLCHECK_BASH: 'no'
+  ENABLE_TEST_QUALITY_JSON: 'no'
+
 include:
   - project: 'infrastructure-services/service-templates/ci-cd'
     ref: master
     file: '.gitlab-ci.yml'
-
-variables:
-  HELM_CHART_VERSION: '0.2.0'
-  HELM_CHART_NAME: 'redis-operator'
-  MIRRORING_REMOTE_BRANCH: 'master'
-  MIRRORING_PULL_FROM: 'https://github.com/OT-CONTAINER-KIT/redis-operator.git'
-  MIRRORING_PUSH_TO: 'https://${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@gitlab.si.francetelecom.fr/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}.git'
-  MIRRORING_LOCAL_BRANCH: 'github'
-  GITLAB_CI_IGNORE_VENDOR: 'yes'
-  ENABLE_TEST_QUALITY_YAML: 'no'
-  ENABLE_TEST_QUALITY_SHELL_SETN: 'no'
-  ENABLE_TEST_QUALITY_SHELLCHECK_SH: 'no'
-  ENABLE_TEST_QUALITY_SHELLCHECK_BASH: 'no'
-  ENABLE_TEST_QUALITY_BATS_COVERAGE: 'no'
-  ENABLE_TEST_QUALITY_JSON: 'no'
-  ENABLE_TEST_QUALITY_DOCKERFILE: 'no'
-  ENABLE_TEST_QUALITY_PYTHON: 'no'
-  ENABLE_TEST_QUALITY_SHELL_ORPHAN: 'no'
-  ENABLE_TEST_QUALITY_MAKEFILE: 'no'
-  ENABLE_TEST_QUALITY_GOLANG: 'no'
-  ENABLE_TEST_UNITS_GOLANG: 'no'

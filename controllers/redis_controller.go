@@ -31,14 +31,14 @@ import (
 	redisv1beta1 "github.com/OT-CONTAINER-KIT/redis-operator/api/v1beta1"
 )
 
-// RedisReconciler reconciles a Redis object
+// RedisReconciler reconciles a Redis object.
 type RedisReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims
+// Reconcile is part of the main kubernetes reconciliation loop which aims.
 func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	reqLogger := r.Log.WithValues("Request.Namespace", req.Namespace, "Request.Name", req.Name)
 	reqLogger.Info("Reconciling opstree redis controller")
@@ -55,11 +55,11 @@ func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		reqLogger.Info("Found annotations redis.opstreelabs.in/skip-reconcile, so skipping reconcile")
 		return ctrl.Result{RequeueAfter: time.Second * 10}, nil
 	}
-	if err := k8sutils.HandleRedisFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.HandleRedisFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if err := k8sutils.AddRedisFinalizer(instance, r.Client); err != nil {
+	if err = k8sutils.AddRedisFinalizer(instance, r.Client); err != nil {
 		return ctrl.Result{}, err
 	}
 
