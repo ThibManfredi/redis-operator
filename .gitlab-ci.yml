@@ -1,5 +1,5 @@
 variables:
-  HELM_CHART_VERSION: '0.3.0'
+  HELM_CHART_VERSION: '0.4.0'
   GOLANGCI_LINT_DISABLED_LINTERS: 'gocognit,gocritic,godot,gofumpt,gosec,lll,revive,unconvert,govet,nlreturn,paralleltest,wsl,tagliatelle,varnamelen,wrapcheck,gomnd,whitespace,nestif,funlen,misspell,gocyclo,ifshort,testpackage'
   ENABLE_TEST_QUALITY_YAML: 'no'
   ENABLE_TEST_QUALITY_BATS_COVERAGE: 'no'
