@@ -125,3 +125,7 @@ type InitContainer struct {
 	Command         []string                     `json:"command,omitempty"`
 	Args            []string                     `json:"args,omitempty"`
 }
+
+type NetworkPolicyConfig struct {
+	TargetedServiceMatchLabels map[string]string
+}
