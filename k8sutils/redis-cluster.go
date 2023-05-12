@@ -191,6 +191,10 @@ func CreateRedisFollowerService(cr *redisv1beta1.RedisCluster) error {
 	return prop.CreateRedisClusterService(cr)
 }
 
+func CreateRedisNetworkPolicy(cr *redisv1beta1.RedisCluster) error {
+	return CreateOrUpdateNetworkPolicy(cr.Namespace, cr.ObjectMeta, redisClusterAsOwner(cr), cr.Spec.NetworkPolicy)
+}
+
 func (service RedisClusterSTS) getReplicaCount(cr *redisv1beta1.RedisCluster) int32 {
 	return cr.Spec.GetReplicaCounts(service.RedisStateFulType)
 }
