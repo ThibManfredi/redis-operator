@@ -192,7 +192,8 @@ func CreateRedisFollowerService(cr *redisv1beta1.RedisCluster) error {
 }
 
 func CreateRedisNetworkPolicy(cr *redisv1beta1.RedisCluster) error {
-	return CreateOrUpdateNetworkPolicy(cr.Namespace, cr.ObjectMeta, redisClusterAsOwner(cr), cr.Spec.NetworkPolicy)
+	networkPolicyMeta := generateObjectMetaInformation(cr.ObjectMeta.Name+"-nodes", cr.ObjectMeta.Namespace, cr.ObjectMeta.Labels, cr.ObjectMeta.Annotations)
+	return CreateOrUpdateNetworkPolicy(cr.Namespace, networkPolicyMeta, redisClusterAsOwner(cr), cr.Spec.NetworkPolicy)
 }
 
 func (service RedisClusterSTS) getReplicaCount(cr *redisv1beta1.RedisCluster) int32 {

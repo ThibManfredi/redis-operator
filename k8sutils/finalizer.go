@@ -2,6 +2,7 @@ package k8sutils
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	redisv1beta1 "github.com/OT-CONTAINER-KIT/redis-operator/api/v1beta1"
@@ -13,11 +14,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-const (
-	RedisFinalizer            string = "redisFinalizer"
-	RedisClusterFinalizer     string = "redisClusterFinalizer"
-	RedisReplicationFinalizer string = "redisReplicationFinalizer"
-	RedisSentinelFinalizer    string = "redisSentinelFinalizer"
+const finalizerPrefix string = "redis.redis.opstreelabs.in"
+
+var (
+	RedisFinalizer            string = fmt.Sprintf("%s/%s", finalizerPrefix, "redisFinalizer")
+	RedisClusterFinalizer     string = fmt.Sprintf("%s/%s", finalizerPrefix, "redisClusterFinalizer")
+	RedisReplicationFinalizer string = fmt.Sprintf("%s/%s", finalizerPrefix, "redisReplicationFinalizer")
+	RedisSentinelFinalizer    string = fmt.Sprintf("%s/%s", finalizerPrefix, "redisSentinelFinalizer")
 )
 
 // finalizeLogger will generate logging interface

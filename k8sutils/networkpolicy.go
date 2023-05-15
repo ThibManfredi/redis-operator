@@ -95,7 +95,7 @@ func getNetworkPolicyIngressConfiguration(
 			From: []networkv1.NetworkPolicyPeer{
 				{
 					PodSelector: &metav1.LabelSelector{
-						MatchLabels: config.TargetedServiceMatchLabels,
+						MatchLabels: config.ExternalComponentMatchLabels,
 					},
 				},
 			},

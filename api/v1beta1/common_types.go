@@ -127,5 +127,5 @@ type InitContainer struct {
 }
 
 type NetworkPolicyConfig struct {
-	TargetedServiceMatchLabels map[string]string `json:"matchLabels,omitempty"`
+	ExternalComponentMatchLabels map[string]string `json:"matchLabels,omitempty"`
 }
